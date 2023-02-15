@@ -1,5 +1,6 @@
 const REGEX = {
-  EMAIL: /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i,
+  EMAIL:
+    /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i,
   USERNAME: /.{8,}$/i,
   PASSWORD: /^(?=.*[a-z])(?=.*[A-Z])[a-zA-Z\d]{8,}$/,
 };
@@ -8,11 +9,6 @@ let email = document.querySelector(".email");
 let password = document.querySelector(".password");
 let confirmPass = document.querySelector(".confirm-password");
 let form = document.querySelector("form");
-
-let isCheckUsername = false;
-let isCheckEmail = false;
-let isCheckPassword = false;
-let isCheckConfirmPassword = false;
 
 function showError(input, message) {
   let parent = input.parentElement;
@@ -28,69 +24,71 @@ function showSuccess(input) {
   parent.classList.remove("error");
   small.innerText = "";
 }
-function checkEmail(e) {
-  let input = e.value;
+function checkEmail(inputField) {
+  let input = inputField.value;
   if (REGEX.EMAIL.test(input)) {
-    isCheckEmail = true;
-    showSuccess(e);
+    showSuccess(inputField);
+    return true;
   } else if (!input) {
-    showError(e, "Can't be blank !");
-    isCheckEmail = false;
+    showError(inputField, "Can't be blank !");
+    return false;
   } else {
-    showError(e, "Email invalid");
-    isCheckEmail = false;
+    showError(inputField, "Email invalid");
+    return false;
   }
-  checkAll();
 }
 function checkUsername(inputField) {
   let input = inputField.value;
   if (REGEX.USERNAME.test(input)) {
     showSuccess(inputField);
-    isCheckUsername = true;
+    return true;
   } else if (!input) {
     showError(inputField, "Can't be blank !");
-    isCheckUsername = false;
+    return false;
   } else {
     showError(inputField, "Username must have at least 8 characters");
-    isCheckUsername = false;
+    return false;
   }
-  checkAll();
 }
 function checkPassword(inputField) {
   let input = inputField.value;
   if (REGEX.PASSWORD.test(input)) {
     showSuccess(inputField);
-    isCheckPassword = true;
+    return true;
   } else if (!input) {
     showError(inputField, "Can't be blank !");
-    isCheckPassword = false;
+    return false;
   } else {
-    showError(inputField,"At least 1 uppercase letter between 8 and 32 characters of length");
-    isCheckPassword = false;
+    showError(
+      inputField,
+      "At least 1 uppercase letter between 8 and 32 characters of length"
+    );
+    return false;
   }
-  checkConfirmPassword(confirmPass);
-  checkAll();
 }
 function checkConfirmPassword(inputField) {
   let input = inputField.value;
-  if (password.value !== inputField.value) {
+  if (password.value !== input) {
     showError(inputField, "Password is not match");
-    isCheckConfirmPassword = false;
+    return false;
   } else if (!input) {
     showError(inputField, "Can't be blank !");
-    isCheckConfirmPassword = false;
+    return false;
   } else {
     showSuccess(inputField);
-    isCheckConfirmPassword = true;
+    return true;
   }
-  checkAll();
 }
 function checkAll() {
+  checkEmail(email);
+  checkUsername(username);
+  checkPassword(password);
+  checkConfirmPassword(confirmPass);
   if (
-    isCheckEmail &&
-    isCheckUsername &&
-    isCheckPassword &&
-    isCheckConfirmPassword
+    checkEmail(email) &&
+    checkUsername(username) &&
+    checkPassword(password) &&
+    checkConfirmPassword(confirmPass)
   ) {
     document.querySelector("button").classList.remove("disabled");
     return true;
@@ -99,19 +97,35 @@ function checkAll() {
     return false;
   }
 }
-username.addEventListener("input", () => checkUsername(username));
-email.addEventListener("input", () => checkEmail(email));
-password.addEventListener("input", () => checkPassword(password));
-confirmPass.addEventListener("input", () => checkConfirmPassword(confirmPass));
-form.addEventListener("submit", (e) => {
-  e.preventDefault();
+
+function handleUsernameInput() {
   checkUsername(username);
+  checkAll();
+}
+function handleEmailInput() {
   checkEmail(email);
+  checkAll();
+}
+function handlePasswordInput() {
   checkPassword(password);
   checkConfirmPassword(confirmPass);
+  checkAll();
+}
+function handleConfirmPassInput() {
+  checkConfirmPassword(confirmPass);
+  checkAll();
+}
+
+username.addEventListener("input", () => handleUsernameInput());
+email.addEventListener("input", () => handleEmailInput());
+password.addEventListener("input", () => handlePasswordInput());
+confirmPass.addEventListener("input", () => handleConfirmPassInput());
+
+form.addEventListener("submit", (e) => {
   if (checkAll()) {
     alert("Dang nhap thanh cong");
   } else {
     checkAll();
   }
+  e.preventDefault();
 });
