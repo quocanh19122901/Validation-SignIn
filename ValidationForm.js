@@ -8,7 +8,7 @@ let isCheckUsername = false;
 let isCheckEmail = false;
 let isCheckPassword = false;
 let isCheckConfirmPassword = false;
-let ischeckAll = false;
+let isCheckAll = false;
 
 function showError(input, message) {
   let parent = input.parentElement;
@@ -26,9 +26,9 @@ function showSuccess(input) {
 }
 function checkEmail(e) {
   let input = e.value;
-  const regexEmail =
+  const REGEX_EMAIL =
     /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
-  if (regexEmail.test(input)) {
+  if (REGEX_EMAIL.test(input)) {
     isCheckEmail = true;
     showSuccess(e);
   } else if (!input) {
@@ -42,8 +42,8 @@ function checkEmail(e) {
 }
 function checkUsername(e) {
   let input = e.value;
-  const regexName = /.{8,}$/i;
-  if (regexName.test(input)) {
+  const REGEX_NAME = /.{8,}$/i;
+  if (REGEX_NAME.test(input)) {
     showSuccess(e);
     isCheckUsername = true;
   } else if (!input) {
@@ -57,8 +57,8 @@ function checkUsername(e) {
 }
 function checkPassword(e) {
   let input = e.value;
-  const regexPassword = /^(?=.*[a-z])(?=.*[A-Z])[a-zA-Z\d]{8,}$/;
-  if (regexPassword.test(input)) {
+  const REGEX_PASSWORD = /^(?=.*[a-z])(?=.*[A-Z])[a-zA-Z\d]{8,}$/;
+  if (REGEX_PASSWORD.test(input)) {
     showSuccess(e);
     isCheckPassword = true;
   } else if (!input) {
@@ -93,10 +93,10 @@ function checkAll() {
     isCheckConfirmPassword
   ) {
     document.querySelector("button").classList.remove("disabled");
-    ischeckAll = true;
+    isCheckAll = true;
   } else {
     document.querySelector("button").classList.add("disabled");
-    ischeckAll = false;
+    isCheckAll = false;
   }
 }
 username.addEventListener("input", () => checkUsername(username));
@@ -110,7 +110,7 @@ form.addEventListener("submit", (e) => {
   checkEmail(email);
   checkPassword(password);
   checkConfirmPassword(confirmPass);
-  if (ischeckAll) {
+  if (isCheckAll) {
     alert("Dang nhap thanh cong");
   } else {
     checkAll();
