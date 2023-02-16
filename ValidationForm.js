@@ -27,68 +27,85 @@ function showSuccess(input) {
 function checkEmail(inputField) {
   let input = inputField.value;
   if (REGEX.EMAIL.test(input)) {
-    showSuccess(inputField);
-    return true;
-  } else if (!input) {
-    showError(inputField, "Can't be blank !");
-    return false;
-  } else {
-    showError(inputField, "Email invalid");
-    return false;
+    return {
+      status: true,
+    };
   }
+  if (!input) {
+    return {
+      massage: "Can't be blank !",
+      status: false,
+    };
+  }
+  return {
+    message: "Email invalid",
+    status: false,
+  };
 }
 function checkUsername(inputField) {
   let input = inputField.value;
   if (REGEX.USERNAME.test(input)) {
-    showSuccess(inputField);
-    return true;
-  } else if (!input) {
-    showError(inputField, "Can't be blank !");
-    return false;
-  } else {
-    showError(inputField, "Username must have at least 8 characters");
-    return false;
+    return {
+      status: true,
+    };
   }
+  if (!input) {
+    return {
+      message: "Can't be blank !",
+      status: false,
+    };
+  }
+  return {
+    message: "Username invalid",
+    status: false,
+  };
 }
 function checkPassword(inputField) {
   let input = inputField.value;
   if (REGEX.PASSWORD.test(input)) {
-    showSuccess(inputField);
-    return true;
-  } else if (!input) {
-    showError(inputField, "Can't be blank !");
-    return false;
-  } else {
-    showError(
-      inputField,
-      "At least 1 uppercase letter between 8 and 32 characters of length"
-    );
-    return false;
+    return {
+      status: true,
+    };
   }
+  if (!input) {
+    return {
+      message: "Can't be blank !",
+      status: false,
+    };
+  }
+  return {
+    message: "Password invalid",
+    status: false,
+  };
 }
 function checkConfirmPassword(inputField) {
   let input = inputField.value;
-  if (password.value !== input) {
-    showError(inputField, "Password is not match");
-    return false;
-  } else if (!input) {
-    showError(inputField, "Can't be blank !");
-    return false;
-  } else {
-    showSuccess(inputField);
-    return true;
+  if (input !== password.value) {
+    return {
+      message: "Password is not match",
+      status: false,
+    };
   }
+  if (!input) {
+    return {
+      message: "Can't be blank !",
+      status: false,
+    };
+  }
+  return { status: true };
 }
+
 function checkAll() {
-  checkEmail(email);
-  checkUsername(username);
-  checkPassword(password);
-  checkConfirmPassword(confirmPass);
+  const isEmailValid = checkEmail(email);
+  const isUsernameValid = checkUsername(username);
+  const isPassWordValid = checkPassword(password);
+  const isConfirmValid = checkConfirmPassword(confirmPass);
+
   if (
-    checkEmail(email) &&
-    checkUsername(username) &&
-    checkPassword(password) &&
-    checkConfirmPassword(confirmPass)
+    isEmailValid.status &&
+    isUsernameValid.status &&
+    isPassWordValid.status &&
+    isConfirmValid.status
   ) {
     document.querySelector("button").classList.remove("disabled");
     return true;
@@ -99,33 +116,55 @@ function checkAll() {
 }
 
 function handleUsernameInput() {
-  checkUsername(username);
+  const isUsernameValid = checkUsername(username);
+  if (isUsernameValid.status) {
+    showSuccess(username);
+  } else {
+    showError(username, isUsernameValid.message);
+  }
   checkAll();
 }
 function handleEmailInput() {
-  checkEmail(email);
+  const isEmailValid = checkEmail(email);
+  if (isEmailValid.status) {
+    showSuccess(email);
+  } else {
+    showError(email, isEmailValid.massage);
+  }
   checkAll();
+
 }
 function handlePasswordInput() {
-  checkPassword(password);
-  checkConfirmPassword(confirmPass);
+  const isPassWordValid = checkPassword(password);
+    if (isPassWordValid.status) {
+      showSuccess(password);
+    } else {
+      showError(password, isPassWordValid.message);
+    }
+    if (confirmPass.value){
+      handleConfirmPassInput();
+    }
   checkAll();
 }
 function handleConfirmPassInput() {
-  checkConfirmPassword(confirmPass);
+  const isConfirmPass = checkConfirmPassword(confirmPass);
+  if (isConfirmPass.status) {
+    showSuccess(confirmPass);
+  } else {
+    showError(confirmPass ,isConfirmPass.message)
+  }
   checkAll();
-}
 
+}
 username.addEventListener("input", () => handleUsernameInput());
 email.addEventListener("input", () => handleEmailInput());
 password.addEventListener("input", () => handlePasswordInput());
 confirmPass.addEventListener("input", () => handleConfirmPassInput());
 
 form.addEventListener("submit", (e) => {
+
   if (checkAll()) {
-    alert("Dang nhap thanh cong");
-  } else {
-    checkAll();
+  alert("Dang nhap thanh cong");
   }
   e.preventDefault();
 });
