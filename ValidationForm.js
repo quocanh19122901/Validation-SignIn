@@ -129,7 +129,7 @@ function handleEmailInput() {
   if (isEmailValid.status) {
     showSuccess(email);
   } else {
-    showError(email, isEmailValid.massage);
+    showError(email, isEmailValid.message);
   }
   checkAll();
 
@@ -151,6 +151,7 @@ function handleConfirmPassInput() {
   if (isConfirmPass.status) {
     showSuccess(confirmPass);
   } else {
+    
     showError(confirmPass ,isConfirmPass.message)
   }
   checkAll();
